@@ -17,6 +17,7 @@ This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https:/
 3. Insert Git Repository to Redmine
 * Edit your project and insert into the path-field the SSH Path to your BitBucket repository ( eg git@bitbucket.org/UserName/GitRepo.git )
 * The Plugin will remove your external path and instead insert a logal path - that's all so far.
+* Additional Hint: If your Repository is private, the bash user running the script needs to use a registered ssh key on bitbucket.org. Private Repositorys are only usable via SSH, not via HTTPS.
 
 4. Automatically Update Repository 
 * Go to the repository Admin interface on Bitbucket and click the 'Service' link on 'Additional options/settings' menu.
@@ -26,13 +27,14 @@ This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https:/
 
 
 == ChangeLog
+*** 13.03.2012
+* Adding UserName to Repository as Identifier.
 *** 12.03.2012
 * Adding automatically creation of local Git repository
 * Automatically pushing git repository from BitBucket to local redmine
 
 == Known Problems
 * Changing BitBucket Git Dir in use
-* Two Repositorys with the same name from different users
 
 == License
 Copyright (c) 2012 Bastian Bringenberg

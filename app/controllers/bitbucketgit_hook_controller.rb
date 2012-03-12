@@ -15,7 +15,7 @@ class BitbucketgitHookController < ApplicationController
     #project = Project.find_by_identifier(identifier)
     #raise ActiveRecord::RecordNotFound, "No project found with identifier '#{identifier}'" if project.nil?
     
-    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + payload['repository']['name'] +'.git'
+    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + payload['repository']['owner'] + '_' + payload['repository']['name'] +'.git'
     repository = Repository.find_by_url(searchPath)
 	
 	raise TypeError, "Project '#{identifier}' has no repository" if repository.nil?
@@ -30,6 +30,7 @@ class BitbucketgitHookController < ApplicationController
 	else
 	   logger.info {"Unable to open file!"}
 	end
+	
     command = "cd \"#{repository.url}\" && cd .. && rm -rf \"#{repository.url}\" && git clone --bare #{content[1]} \"#{repository.url}\""
     logger.info {command}
     exec(command)
