@@ -1,8 +1,14 @@
 require 'redmine'
 
-Redmine::Plugin.register :redmine_bitbucket_hook do
-  name 'Redmine Bitbucket Hook plugin'
-  author 'Alessio Caiazza'
-  description 'This plugin allows your Redmine installation to receive Bitbucket post-receive notifications. Based on github work by Jakob Skjerning.'
-  version '0.1.2'
+Redmine::Plugin.register :redmine_bitbucketgit_hook do
+  name 'Redmine Bitbucket GIT Hook plugin'
+  author 'Bastian Bringenberg'
+  description 'This plugin allows your Redmine installation to receive Bitbucket GIT post-receive notifications. Based on bitbucket plugin by Alessio Caiazza and github work by Jakob Skjerning.'
+  version '0.0.1'
+    settings(:default => {
+           :git_dir  => ''
+           },
+           :partial => 'settings/bitbucketgit_hook_setting')
 end
+
+ActiveRecord::Base.observers << :repository_observer

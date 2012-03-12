@@ -1,50 +1,41 @@
-= Redmine Bitbucket Hook
+= Redmine Bitbucket GIT Hook
 
-This plugin allows you to update your local Mercurial repositories in Redmine when changes have been pushed to Bitbucket.
+This plugin allows you to automatically insert a local git repository if you 
 
-This plugin is a fork from Redmine Github Hook from Jakob Skjerning ( http://github.com/koppen/redmine_github_hook )
-
-== Description
-
-Redmine <http://redmine.org> has supported Mercurial repositories for a long time, allowing you to browse your code and view your changesets directly in Redmine. For this purpose, Redmine relies on local clones of the Mercurial repositories.
-
-If your shared repository is on a remote machine - for example on Bitbucket - this unfortunately means a bit of legwork to keep the local, Redmine-accessible repository up-to-date. The common approach is to set up a cronjob that pulls in any changes with regular intervals and updates Redmine with them.
-
-That approach works perfectly fine, but is a bit heavy-handed and cumbersome. The Redmine Bitbucket Hook plugin allows Bitbucket to notify your Redmine installation when changes have been pushed to a repository, triggering an update of your local repository and Redmine data only when it is actually necessary.
-
+This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https://bitbucket.org/nolith/redmine-bitbucket )
 
 == Installation
 
 1. Installing the plugin
-   1. Install the json gem <http://json.rubyforge.org/> on the machine where Redmine is running.
-   2. Follow the plugin installation procedure at http://www.redmine.org/wiki/redmine/Plugins.
-   3. Restart your Redmine.
-   4. If you already have a local Mercurial repository set up and working from Redmine go to step 3, otherwise continue at step 2.
+* Follow the plugin installation procedure at http://www.redmine.org/wiki/redmine/Plugins.
+* Restart your Redmine.
+* Create in your redmine folder a folder named bitbucket_git_repositories ( if you want to use an other name, set it up under plugin configuration AND create it! )
 
-2. Adding a Mercurial repository to a project (note, this should work whether you want to use Redmine Bitbucket Hook or not). Either follow the instructions at http://www.redmine.org/wiki/redmine/HowTo_keep_in_sync_your_git_repository_for_redmine or the ones below:
-   1. Go to the directory on your Redmine machine where you want to keep your repository, for example /home/redmine/repositories/.
-   2. Get a clone of the repository into that location: hg clone http://bitbucket.org/nolith/redmine-bitbucket. This creates a repository directory at /home/redmine/repositories/redmine-bitbucket/.
-   3. Open Redmine in your browser and navigate to the Settings for the project you want to add a Mercurial repository to.
-   4. Under the Repository tab, choose Mercurial as your SCM and enter the full path to the repository directory from step 2; /home/redmine/repositories/redmine-bitbucket/ . Click "Create".
-   5. Click the new "Repository" link in the main navigation to verify that your repository integration works - this might take a while as Redmine is fetching all commits.
+2. Create Git Repository unter BitBucket
+* See under BitBucket if you don't know yet
 
-3. Connecting Bitbucket to Redmine
-   1. Go to the repository Admin interface on Bitbucket and click the 'Service' link on 'Additional options/settings' menu.
-   2. Under "Services Administration" add a new "POST" service.
-   3. Compile the URL field with: "[redmine_installation_url]/bitbucket_hook" (for example "http://example.com/bitbucket_hook").
+3. Insert Git Repository to Redmine
+* Edit your project and insert into the path-field the SSH Path to your BitBucket repository ( eg git@bitbucket.org/UserName/GitRepo.git )
+* The Plugin will remove your external path and instead insert a logal path - that's all so far.
 
-That's it. Bitbucket will now send a HTTP POST to the Redmine Bitbucket Hook plugin whenever changes are pushed to Bitbucket. The plugin then takes care of pulling the changes to the local repository and updating the Redmine database with them.
+4. Automatically Update Repository 
+* Go to the repository Admin interface on Bitbucket and click the 'Service' link on 'Additional options/settings' menu.
+* Under "Services Administration" add a new "POST" service.
+* Compile the URL field with: "[redmine_installation_url]/bitbucketgit_hook" (for example "http://example.com/bitbucketgit_hook").
+* That's it. Bitbucket will now send a HTTP POST to the Redmine Bitbucket Hook plugin whenever changes are pushed to Bitbucket. The plugin then takes care of pulling the changes to the local repository and updating the Redmine database with them.
 
 
-== Assumptions
+== ChangeLog
+*** 12.03.2012
+* Adding automatically creation of local Git repository
+* Automatically pushing git repository from BitBucket to local redmine
 
-* Your project identifier in Redmine is the same as the project name on Bitbucket.
-* Redmine 0.8 running on a *nix-like system.
-* Mercurial available on the commandline and the repository has the bitbucket url as a default path.
-
+== Known Problems
+* Changing BitBucket Git Dir in use
+* Two Repositorys with the same name from different users
 
 == License
-
+Copyright (c) 2012 Bastian Bringenberg
 Copyright (c) 2010 Alessio Caiazza
 Copyright (c) 2009 Jakob Skjerning
 
