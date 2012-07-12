@@ -11,4 +11,5 @@ Redmine::Plugin.register :redmine_bitbucketgit_hook do
            :partial => 'settings/bitbucketgit_hook_setting')
 end
 
+# Disable/comment while applying migrations
 ActiveRecord::Base.observers << :repository_observer

@@ -8,6 +8,7 @@ This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https:/
 
 1. Installing the plugin
 * Follow the plugin installation procedure at http://www.redmine.org/wiki/redmine/Plugins.
+** During `rake redmine:plugins:migrate` the last line of `init.rb` has to be removed/disabled.
 * Restart your Redmine.
 * Create in your redmine folder a folder named bitbucket_git_repositories ( if you want to use an other name, set it up under plugin configuration AND create it! )
 
