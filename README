@@ -1,6 +1,6 @@
 = Redmine Bitbucket GIT Hook
 
-This plugin allows you to automatically insert a local git repository if you 
+This plugin allows you to automatically insert a local git repository if you
 
 This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https://bitbucket.org/nolith/redmine-bitbucket )
 
@@ -8,7 +8,6 @@ This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https:/
 
 1. Installing the plugin
 * Follow the plugin installation procedure at http://www.redmine.org/wiki/redmine/Plugins.
-** During `rake redmine:plugins:migrate` the last line of `init.rb` has to be removed/disabled.
 * Restart your Redmine.
 * Create in your redmine folder a folder named bitbucket_git_repositories ( if you want to use an other name, set it up under plugin configuration AND create it! )
 
@@ -20,7 +19,7 @@ This plugin is a fork from Redmine BitBucket Hook from Alessio Caiazza ( https:/
 * The Plugin will remove your external path and instead insert a logal path - that's all so far.
 * Additional Hint: If your Repository is private, the bash user running the script needs to use a registered ssh key on bitbucket.org. Private Repositorys are only usable via SSH, not via HTTPS.
 
-4. Automatically Update Repository 
+4. Automatically Update Repository
 * Go to the repository Admin interface on Bitbucket and click the 'Service' link on 'Additional options/settings' menu.
 * Under "Services Administration" add a new "POST" service.
 * Compile the URL field with: "[redmine_installation_url]/bitbucketgit_hook" (for example "http://example.com/bitbucketgit_hook").
