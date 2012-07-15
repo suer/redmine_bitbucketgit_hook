@@ -16,6 +16,7 @@ class BitbucketgitHookController < ApplicationController
     #raise ActiveRecord::RecordNotFound, "No project found with identifier '#{identifier}'" if project.nil?
     
     searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + payload['repository']['owner'] + '_' + payload['repository']['name'] +'.git'
+    logger.info { searchPath }
     repository = Repository.find_by_url(searchPath)
 	
 	raise TypeError, "Project '#{identifier}' has no repository" if repository.nil?

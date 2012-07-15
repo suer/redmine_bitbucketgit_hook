@@ -1,5 +1,7 @@
 require 'redmine'
+require_dependency File.expand_path(File.join(File.dirname(__FILE__), 'app/models/repository_observer'))
 
+Rails.logger.info "register redmine_bitbucketgit_hook"
 Redmine::Plugin.register :redmine_bitbucketgit_hook do
   name 'Redmine Bitbucket GIT Hook plugin'
   author 'Bastian Bringenberg'
@@ -11,4 +13,7 @@ Redmine::Plugin.register :redmine_bitbucketgit_hook do
            :partial => 'settings/bitbucketgit_hook_setting')
 end
 
-Rails.configuration.active_record.observers << :repository_observer
+#Rails.configuration.active_record.observers << :repository_observer
+ActiveRecord::Base.observers << :repository_observer
+
+Rails.logger.info "redmine_bitbucketgit_hook end"
