@@ -5,7 +5,9 @@ class RepositoryObserver < ActiveRecord::Observer
 
   def before_save(repository)
       Rails.logger.info("before save")
-      if repository.type == 'Repository::Git' && repository.url.match('.*bitbucket.org.*')
+      flag = repository.type == 'Git' || repository.type == 'Repository::Git'
+      flag &= repository.url.match('.*(bitbucket.org|github.com).*') 
+      if flag 
           base_dir_name = repository.url[/[^\/]+.git/]
           url = repository.url
           user = /^\S*[:\/](.*)\/\S*$/.match( url )
