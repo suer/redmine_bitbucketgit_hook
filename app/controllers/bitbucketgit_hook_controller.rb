@@ -7,35 +7,34 @@ class BitbucketgitHookController < ApplicationController
 
   def index
     payload = JSON.parse(params[:payload])
-    logger.debug { "Received from Bitbucket: #{payload.inspect}" }
+    Rails.logger.info "Received from Bitbucket: #{payload.inspect}"
 
     # For now, we assume that the repository name is the same as the project identifier
     identifier = payload['repository']['name']
-
+    owner = payload['repository']['owner']
+    slug = payload['repository']['slug']
+    is_private = payload['repository']['is_private']
     #project = Project.find_by_identifier(identifier)
     #raise ActiveRecord::RecordNotFound, "No project found with identifier '#{identifier}'" if project.nil?
     
-    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + payload['repository']['owner'] + '_' + payload['repository']['name'] +'.git'
-    logger.info { searchPath }
+    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + owner + '_' + slug +'.git'
+    Rails.logger.info searchPath
     repository = Repository.find_by_url(searchPath)
 	
 	raise TypeError, "Project '#{identifier}' has no repository" if repository.nil?
     raise TypeError, "Repository for project '#{identifier}' is not a Git repository" unless repository.is_a?(Repository::Git)
 
-    # Get updates from the bitbucket repository
-    aFile = File.new(repository.url + '/config', "r")
-	if aFile
-	   content = aFile.sysread(2000)
-	   content = /^\surl\s=\s(.*)$/.match( content )
-	   logger.info{content[1]}
-	else
-	   logger.info {"Unable to open file!"}
-	end
-	
-    command = "cd \"#{repository.url}\" && cd .. && rm -rf \"#{repository.url}\" && git clone --bare #{content[1]} \"#{repository.url}\""
-    logger.info {command}
-    exec(command)
+    repos = ''
+    if is_private
+        repos = "git@bitbucket.org:#{owner}/#{slug}.git"
+    else
+        repos = "https://bitbucket.org/#{owner}/#{slug}.git"
+    end
+    command = "cd \"#{repository.url}\" && cd .. && rm -rf \"#{repository.url}\" && git clone --bare #{repos} \"#{repository.url}\""
+    Rails.logger.info {command}
+    result = system(command)
 
+    Rails.logger.info "update result: #{result}"
     # Fetch the new changesets into Redmine
     repository.fetch_changesets
 
