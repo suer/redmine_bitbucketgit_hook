@@ -30,11 +30,18 @@ class BitbucketgitHookController < ApplicationController
     else
         repos = "https://bitbucket.org/#{owner}/#{slug}.git"
     end
-    command = "cd \"#{repository.url}\" && cd .. && rm -rf \"#{repository.url}\" && git clone --bare #{repos} \"#{repository.url}\""
-    Rails.logger.info {command}
-    result = system(command)
+    #command = "cd \"#{repository.url}\" && cd .. && rm -rf \"#{repository.url}\" && git clone --bare #{repos} \"#{repository.url}\""
+    bFile = File.new(repository.url, "r")
+    if bFile
+        Rails.logger.info {"File exists"}
+        command = "cd \"#{repository.url}\" && git fetch"
+    else
+        command = "cd \"#{repository.url}\" && git clone --mirror #{repos} \"#{repositry.url}\""
+    end
 
-    Rails.logger.info "update result: #{result}"
+    Rails.logger.info {command}
+    exec(command)
+
     # Fetch the new changesets into Redmine
     repository.fetch_changesets
 
