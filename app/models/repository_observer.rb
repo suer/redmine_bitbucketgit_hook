@@ -17,15 +17,16 @@ class RepositoryObserver < ActiveRecord::Observer
           Rails.logger.info git_dir
           redminedir = Dir.getwd + '/'
           Rails.logger.info redminedir+git_dir
-          if Dir[redminedir+git_dir] == []
-                comm_str = 'git clone --mirror '+ url + ' "'+ redminedir + git_dir +'"'
-                b = system(comm_str)
-        	repository.url = redminedir + git_dir
-                return false
-          else
-          	Rails.logger.info "Dir already in use..."
-          	return false
+          comm_str = ""
+          unless Dir[redminedir+git_dir] == []
+                #Rails.logger.info "Dir already in use..."
+       	        comm_str = 'rm -rf "' + redminedir + git_dir + '" &&'
+                #return false
           end
+          comm_str += 'git clone --mirror '+ url + ' "'+ redminedir + git_dir +'"'
+          b = system(comm_str)
+          repository.url = redminedir + git_dir
+          return false
       end
   end
   
