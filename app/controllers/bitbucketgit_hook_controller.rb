@@ -6,29 +6,22 @@ class BitbucketgitHookController < ApplicationController
   skip_before_filter :verify_authenticity_token, :check_if_login_required
 
   def index
-    payload = JSON.parse(params[:payload])
-    Rails.logger.info "Received from Bitbucket: #{payload.inspect}"
+    payload = (params[:payload] ? JSON.parse(params[:payload]) : JSON.parse(request.body.read, {:symbolize_names => false}))
 
-    # For now, we assume that the repository name is the same as the project identifier
-    identifier = payload['repository']['name']
-    owner = payload['repository']['owner']
-    slug = payload['repository']['slug']
-    is_private = payload['repository']['is_private']
-    #project = Project.find_by_identifier(identifier)
-    #raise ActiveRecord::RecordNotFound, "No project found with identifier '#{identifier}'" if project.nil?
+    repo = bitbucker_repository(payload)
     
-    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + owner + '_' + slug +'.git'
-    Rails.logger.info searchPath
+    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + repo.owner + '_' + repo.slug + '.git'
+
     repository = Repository.find_by_url(searchPath)
-	
-	raise TypeError, "Project '#{identifier}' has no repository" if repository.nil?
-    raise TypeError, "Repository for project '#{identifier}' is not a Git repository" unless repository.is_a?(Repository::Git)
+
+    raise TypeError, "Project '#{repo.identifier}' has no repository" if repository.nil?
+    raise TypeError, "Repository for project '#{repo.identifier}' is not a Git repository" unless repository.is_a?(Repository::Git)
 
     repos = ''
-    if is_private
-        repos = "git@bitbucket.org:#{owner}/#{slug}.git"
+    if repo.is_private
+        repos = "git@bitbucket.org:#{repo.owner}/#{repo.slug}.git"
     else
-        repos = "https://bitbucket.org/#{owner}/#{slug}.git"
+        repos = "https://bitbucket.org/#{repo.owner}/#{repo.slug}.git"
     end
     #command = "cd \"#{repository.url}\" && cd .. && rm -rf \"#{repository.url}\" && git clone --bare #{repos} \"#{repository.url}\""
     bFile = File.new(repository.url, "r")
@@ -49,6 +42,17 @@ class BitbucketgitHookController < ApplicationController
   end
 
   private
+
+  def bitbucker_repository(payload)
+    repository = Struct.new(:identifier, :owner, :slug, :is_private)
+
+    identifier = payload['repository']['name']
+    owner = (payload['repository']['owner'].is_a?(Hash) ? payload['repository']['owner']['username'] : payload['repository']['owner'])
+    slug = payload['repository']['slug'] || identifier
+    is_private = payload['repository']['is_private']
+
+    repository.new(identifier, owner, slug, is_private)
+  end
   
   def exec(command)
     logger.info { "BitbucketGitHook: Executing command: '#{command}'" }
