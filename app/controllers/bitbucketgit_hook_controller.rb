@@ -27,9 +27,9 @@ class BitbucketgitHookController < ApplicationController
     bFile = File.new(repository.url, "r")
     if bFile
         Rails.logger.info {"File exists"}
-        command = "cd \"#{repository.url}\" && git fetch"
+        command = "cd \"#{repository.url}\" && #{Repository::Git.scm_command} fetch"
     else
-        command = "cd \"#{repository.url}\" && git clone --mirror #{repos} \"#{repositry.url}\""
+        command = "cd \"#{repository.url}\" && #{Repository::Git.scm_command} clone --mirror #{repos} \"#{repositry.url}\""
     end
 
     Rails.logger.info {command}
