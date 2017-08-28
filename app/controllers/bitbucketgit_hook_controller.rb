@@ -10,7 +10,7 @@ class BitbucketgitHookController < ApplicationController
 
     repo = bitbucker_repository(payload)
     
-    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s + '/' + repo.owner + '_' + repo.slug + '.git'
+    searchPath = Dir.getwd + '/' + Setting.plugin_redmine_bitbucketgit_hook.with_indifferent_access[:bitbucketgit_dir].to_s + '/' + repo.owner + '_' + repo.slug + '.git'
 
     repository = Repository.find_by_url(searchPath)
 

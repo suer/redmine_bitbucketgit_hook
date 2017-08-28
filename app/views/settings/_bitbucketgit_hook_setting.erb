@@ -1,5 +1,5 @@
   <%
-    git_dir = Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir]
+    git_dir = Setting.plugin_redmine_bitbucketgit_hook.with_indifferent_access[:bitbucketgit_dir]
     git_dir = 'bitbucket_git_repositories' if git_dir.blank?
   %>
 
