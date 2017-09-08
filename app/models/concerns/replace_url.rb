@@ -17,7 +17,7 @@ module ReplaceURL
       url = self.url
       user = /^\S*[:\/](.*)\/\S*$/.match( url )
       user = user[1]
-      git_dir = Setting.plugin_redmine_bitbucketgit_hook[:bitbucketgit_dir].to_s
+      git_dir = Setting.plugin_redmine_bitbucketgit_hook.with_indifferent_access[:bitbucketgit_dir].to_s
       git_dir = git_dir  + '/' + user + '_' + base_dir_name 
       redminedir = Dir.getwd + '/'
       comm_str = ""
