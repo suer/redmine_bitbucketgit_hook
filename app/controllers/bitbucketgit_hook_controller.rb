@@ -3,7 +3,7 @@ require 'json'
 
 class BitbucketgitHookController < ApplicationController
 
-  skip_before_filter :verify_authenticity_token, :check_if_login_required
+  skip_before_action :verify_authenticity_token, :check_if_login_required
 
   def index
     payload = (params[:payload] ? JSON.parse(params[:payload]) : JSON.parse(request.body.read, {:symbolize_names => false}))
@@ -38,7 +38,7 @@ class BitbucketgitHookController < ApplicationController
     # Fetch the new changesets into Redmine
     repository.fetch_changesets
 
-    render(:text => 'OK')
+    render(plain: 'OK')
   end
 
   private
